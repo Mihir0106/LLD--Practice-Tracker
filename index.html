@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Awesome Low Level Design Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f3f4f6;
+      }
+      /* Custom Checkbox Styling */
+      .checkbox-wrapper input:checked + div {
+        background-color: #10b981;
+        border-color: #10b981;
+      }
+      .checkbox-wrapper input:checked + div svg {
+        display: block;
+      }
+      .checkbox-wrapper input:focus + div {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">
+          LLD Problem Tracker
+        </h1>
+        <p class="text-gray-600 mb-6">
+          Track your progress on
+          <a
+            href="https://github.com/ashishps1/awesome-low-level-design"
+            target="_blank"
+            class="text-blue-600 hover:underline"
+            >Ashishps1's Awesome Low Level Design</a
+          >
+        </p>
+
+        <!-- Progress Bar -->
+        <div
+          class="max-w-xl mx-auto bg-white p-4 rounded-xl shadow-sm border border-gray-100"
+        >
+          <div
+            class="flex justify-between text-sm font-bold text-gray-700 mb-2"
+          >
+            <span id="progress-text">0% Complete</span>
+            <span id="progress-count">0/0</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div
+              id="progress-bar"
+              class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Filters -->
+      <div
+        class="flex flex-wrap justify-center gap-3 mb-8 sticky top-4 z-10 bg-gray-50/90 backdrop-blur-sm p-2 rounded-lg"
+      >
+        <button
+          onclick="filterProblems('all')"
+          class="filter-btn px-5 py-2 rounded-full font-medium shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 bg-blue-600 text-white"
+          data-filter="all"
+        >
+          All
+        </button>
+        <button
+          onclick="filterProblems('Easy')"
+          class="filter-btn px-5 py-2 rounded-full font-medium shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 bg-white text-gray-600 hover:bg-green-50 hover:text-green-600"
+          data-filter="Easy"
+        >
+          Easy
+        </button>
+        <button
+          onclick="filterProblems('Medium')"
+          class="filter-btn px-5 py-2 rounded-full font-medium shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 bg-white text-gray-600 hover:bg-yellow-50 hover:text-yellow-600"
+          data-filter="Medium"
+        >
+          Medium
+        </button>
+        <button
+          onclick="filterProblems('Hard')"
+          class="filter-btn px-5 py-2 rounded-full font-medium shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 bg-white text-gray-600 hover:bg-red-50 hover:text-red-600"
+          data-filter="Hard"
+        >
+          Hard
+        </button>
+      </div>
+
+      <!-- Problem List -->
+      <div id="problem-container" class="space-y-6 pb-12">
+        <!-- Content injected by JS -->
+      </div>
+
+      <!-- Footer -->
+      <footer
+        class="text-center mt-auto py-8 text-gray-500 text-sm border-t border-gray-200"
+      >
+        <p>Built for developers practicing LLD.</p>
+        <p class="mt-1">
+          Data sourced from
+          <a
+            href="https://github.com/ashishps1/awesome-low-level-design"
+            target="_blank"
+            class="underline hover:text-blue-600"
+            >awesome-low-level-design</a
+          >.
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          <i class="fas fa-save mr-1"></i> Progress is saved automatically to
+          your browser.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // Data Source
+      const problems = [
+        // Easy
+        { category: "Easy", name: "Design Parking Lot" },
+        { category: "Easy", name: "Design Stack Overflow" },
+        { category: "Easy", name: "Design a Vending Machine" },
+        { category: "Easy", name: "Design Logging Framework" },
+        { category: "Easy", name: "Design Traffic Signal Control System" },
+        { category: "Easy", name: "Design Coffee Vending Machine" },
+        { category: "Easy", name: "Design a Task Management System" },
+
+        // Medium
+        { category: "Medium", name: "Design ATM" },
+        { category: "Medium", name: "Design LinkedIn" },
+        { category: "Medium", name: "Design LRU Cache" },
+        { category: "Medium", name: "Design Tic Tac Toe Game" },
+        { category: "Medium", name: "Design Pub Sub System" },
+        { category: "Medium", name: "Design an Elevator System" },
+        { category: "Medium", name: "Design Car Rental System" },
+        { category: "Medium", name: "Design an Online Auction System" },
+        { category: "Medium", name: "Design Hotel Management System" },
+        { category: "Medium", name: "Design a Digital Wallet Service" },
+        { category: "Medium", name: "Design Airline Management System" },
+        { category: "Medium", name: "Design a Library Management System" },
+        { category: "Medium", name: "Design a Social Network like Facebook" },
+        { category: "Medium", name: "Design Restaurant Management System" },
+        { category: "Medium", name: "Design a Concert Ticket Booking System" },
+
+        // Hard
+        { category: "Hard", name: "Design CricInfo" },
+        { category: "Hard", name: "Design Splitwise" },
+        { category: "Hard", name: "Design Chess Game" },
+        { category: "Hard", name: "Design a Snake and Ladder game" },
+        { category: "Hard", name: "Design Ride-Sharing Service like Uber" },
+        { category: "Hard", name: "Design Course Registration System" },
+        { category: "Hard", name: "Design Movie Ticket Booking System" },
+        { category: "Hard", name: "Design Online Shopping System like Amazon" },
+        { category: "Hard", name: "Design Online Stock Brokerage System" },
+        {
+          category: "Hard",
+          name: "Design Music Streaming Service like Spotify",
+        },
+        {
+          category: "Hard",
+          name: "Design Online Food Delivery Service like Swiggy",
+        },
+      ];
+
+      // Helper to generate GitHub File Links (Direct .md)
+      function getGithubLink(name) {
+        // Base path for problems directory - changed to blob for files
+        const basePath =
+          "https://github.com/ashishps1/awesome-low-level-design/blob/main/problems";
+
+        // Override map for problems where filename is known to differ from standard slug
+        const overrides = {
+          "Design Traffic Signal Control System": "traffic-signal",
+          "Design Tic Tac Toe Game": "tic-tac-toe",
+          "Design Online Stock Brokerage System": "stock-brokerage-system",
+          "Design a Snake and Ladder game": "snake-and-ladder",
+          "Design Ride-Sharing Service like Uber": "ride-sharing-service",
+          "Design Online Shopping System like Amazon": "shopping-system",
+          "Design Online Food Delivery Service like Swiggy":
+            "food-delivery-service",
+        };
+
+        let cleanName = "";
+
+        if (overrides[name]) {
+          cleanName = overrides[name];
+        } else {
+          // Standard Slug Generation Logic
+          cleanName = name
+            .replace(/^Design\s+/, "") // Remove "Design "
+            .replace(/\s+like\s+.+$/, "") // Remove " like Uber/Spotify/etc"
+            .replace(/\s+game$/i, "") // Remove " game"
+            .replace(/\b(a|an)\b\s+/i, "") // Remove "a " or "an "
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-"); // Replace spaces with hyphens
+        }
+
+        // Append .md to ensure it links to the markdown file
+        return `${basePath}/${cleanName}.md`;
+      }
+
+      // State Management
+      const STORAGE_KEY = "lld_tracker_progress_v1";
+      let completedProblems = new Set(
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
+      );
+      let currentFilter = "all";
+
+      // DOM Elements
+      const container = document.getElementById("problem-container");
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+      const progressCount = document.getElementById("progress-count");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+
+      // Render Function
+      function render() {
+        container.innerHTML = "";
+
+        const filteredProblems = problems.filter(
+          (p) => currentFilter === "all" || p.category === currentFilter
+        );
+
+        // Group by Category if 'all' is selected, otherwise just show list
+        const categoriesToShow =
+          currentFilter === "all"
+            ? ["Easy", "Medium", "Hard"]
+            : [currentFilter];
+
+        categoriesToShow.forEach((cat) => {
+          const catProblems = filteredProblems.filter(
+            (p) => p.category === cat
+          );
+          if (catProblems.length === 0) return;
+
+          const section = document.createElement("div");
+          section.className =
+            "bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 transition-shadow hover:shadow-md";
+
+          // Header Styling
+          const styles = {
+            Easy: {
+              bg: "bg-green-50",
+              border: "border-green-500",
+              text: "text-green-800",
+              badge: "bg-green-100 text-green-700",
+            },
+            Medium: {
+              bg: "bg-yellow-50",
+              border: "border-yellow-500",
+              text: "text-yellow-800",
+              badge: "bg-yellow-100 text-yellow-700",
+            },
+            Hard: {
+              bg: "bg-red-50",
+              border: "border-red-500",
+              text: "text-red-800",
+              badge: "bg-red-100 text-red-700",
+            },
+          }[cat];
+
+          section.innerHTML = `
+                    <div class="px-6 py-4 ${styles.bg} border-l-4 ${
+            styles.border
+          } flex justify-between items-center">
+                        <h2 class="font-bold text-lg ${
+                          styles.text
+                        }">${cat} Problems</h2>
+                        <span class="text-xs font-bold ${
+                          styles.badge
+                        } px-2 py-1 rounded-full border border-opacity-10 border-black">
+                            ${
+                              catProblems.filter((p) =>
+                                completedProblems.has(p.name)
+                              ).length
+                            } / ${catProblems.length} Done
+                        </span>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        ${catProblems
+                          .map((problem) => {
+                            const isDone = completedProblems.has(problem.name);
+                            return `
+                                <div class="group flex items-center justify-between p-4 hover:bg-gray-50 transition duration-150 ease-in-out ${
+                                  isDone ? "bg-gray-50" : ""
+                                }">
+                                    <div class="flex items-center space-x-4 flex-1 cursor-pointer" onclick="toggleProblem('${
+                                      problem.name
+                                    }')">
+                                        <label class="checkbox-wrapper relative flex items-center p-1" onclick="event.stopPropagation()">
+                                            <input type="checkbox" 
+                                                class="sr-only" 
+                                                onchange="toggleProblem('${
+                                                  problem.name
+                                                }')" 
+                                                ${isDone ? "checked" : ""}>
+                                            <div class="w-6 h-6 border-2 border-gray-300 rounded transition-colors duration-200 flex items-center justify-center bg-white group-hover:border-blue-400">
+                                                <svg class="w-3.5 h-3.5 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                        </label>
+                                        <div class="flex-1">
+                                            <span class="text-gray-700 font-medium block transition-all ${
+                                              isDone
+                                                ? "line-through text-gray-400"
+                                                : ""
+                                            }">${problem.name}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="${getGithubLink(problem.name)}" 
+                                       target="_blank" 
+                                       title="Read Problem Statement"
+                                       class="ml-4 flex items-center space-x-1 text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg transition-all transform active:scale-95 shadow-sm border border-blue-100 hover:border-blue-600">
+                                        <span>View Problem</span>
+                                        <i class="fas fa-file-alt text-xs ml-1"></i>
+                                    </a>
+                                </div>
+                            `;
+                          })
+                          .join("")}
+                    </div>
+                `;
+          container.appendChild(section);
+        });
+
+        if (categoriesToShow.length > 0 && filteredProblems.length === 0) {
+          container.innerHTML = `<div class="text-center text-gray-400 py-10">No problems found.</div>`;
+        }
+
+        updateProgress();
+      }
+
+      // Toggle Logic
+      window.toggleProblem = (name) => {
+        if (completedProblems.has(name)) {
+          completedProblems.delete(name);
+        } else {
+          completedProblems.add(name);
+        }
+        save();
+        render();
+      };
+
+      // Filter Logic
+      window.filterProblems = (filter) => {
+        currentFilter = filter;
+
+        // Update buttons
+        filterBtns.forEach((btn) => {
+          const isActive = btn.dataset.filter === filter;
+          if (isActive) {
+            btn.className =
+              "filter-btn px-5 py-2 rounded-full font-medium shadow-md transition-all duration-200 transform scale-105 bg-blue-600 text-white";
+          } else {
+            btn.className =
+              "filter-btn px-5 py-2 rounded-full font-medium shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 bg-white text-gray-600 hover:bg-gray-50";
+          }
+        });
+
+        render();
+      };
+
+      // Save & Progress
+      function save() {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify([...completedProblems])
+        );
+      }
+
+      function updateProgress() {
+        const total = problems.length;
+        const completed = completedProblems.size;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        progressBar.style.width = `${percent}%`;
+        progressText.innerText = `${percent}% Complete`;
+        progressCount.innerText = `${completed}/${total} Solved`;
+
+        // Change color based on completion
+        if (percent === 100) {
+          progressBar.classList.remove("from-blue-500", "to-indigo-600");
+          progressBar.classList.add("from-green-400", "to-green-600");
+        }
+      }
+
+      // Initial Render
+      render();
+    </script>
+  </body>
+</html>
